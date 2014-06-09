@@ -21,9 +21,6 @@
   EXPORT  ArmPlatformGetPrimaryCoreMpId
   EXPORT  ArmPlatformIsPrimaryCore
 
-  IMPORT  _gPcd_FixedAtBuild_PcdArmPrimaryCore
-  IMPORT  _gPcd_FixedAtBuild_PcdArmPrimaryCoreMask
-  
   PRESERVE8
   AREA    ArmPlatformNullHelper, CODE, READONLY
 
@@ -36,10 +33,9 @@ ArmPlatformPeiBootAction FUNCTION
 //  IN UINTN MpId
 //  );
 ArmPlatformGetCorePosition FUNCTION
-  and	r1, r0, #ARM_CORE_MASK
-  and	r0, r0, #ARM_CLUSTER_MASK
-  add	r0, r1, r0, LSR #7
-  bx 	lr
+  // single core, return 1
+  mov r0, #1
+  bx lr
   ENDFUNC
 
 //UINTN
@@ -47,9 +43,8 @@ ArmPlatformGetCorePosition FUNCTION
 //  VOID
 //  );
 ArmPlatformGetPrimaryCoreMpId FUNCTION
-  LoadConstantToReg (_gPcd_FixedAtBuild_PcdArmPrimaryCore, r0)
-  ldr   r0, [r0]
-  bx    lr
+  // return MPIDR of the calling CPU
+  b ArmReadMpidr
   ENDFUNC
 
 //UINTN
@@ -57,15 +52,9 @@ ArmPlatformGetPrimaryCoreMpId FUNCTION
 //  IN UINTN MpId
 //  );
 ArmPlatformIsPrimaryCore FUNCTION
-  LoadConstantToReg (_gPcd_FixedAtBuild_PcdArmPrimaryCoreMask, r1)
-  ldr   r1, [r1]
-  and   r0, r0, r1
-  LoadConstantToReg (_gPcd_FixedAtBuild_PcdArmPrimaryCore, r1)
-  ldr   r1, [r1]
-  cmp   r0, r1
-  moveq r0, #1
-  movne r0, #0
-  bx    lr
+  // single core on BeagleBone Black SoC, return 1
+  mov r0, #1
+  bx lr
   ENDFUNC
 
   END

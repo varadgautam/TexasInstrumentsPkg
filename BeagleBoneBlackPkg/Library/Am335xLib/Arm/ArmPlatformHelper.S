@@ -22,20 +22,16 @@ GCC_ASM_EXPORT(ArmPlatformGetCorePosition)
 GCC_ASM_EXPORT(ArmPlatformGetPrimaryCoreMpId)
 GCC_ASM_EXPORT(ArmPlatformIsPrimaryCore)
 
-GCC_ASM_IMPORT(_gPcd_FixedAtBuild_PcdArmPrimaryCore)
-GCC_ASM_IMPORT(_gPcd_FixedAtBuild_PcdArmPrimaryCoreMask)
-
 ASM_PFX(ArmPlatformPeiBootAction):
-  bx    lr
+  bx  lr
 
 //UINTN
 //ArmPlatformGetCorePosition (
 //  IN UINTN MpId
 //  );
 ASM_PFX(ArmPlatformGetCorePosition):
-  and	r1, r0, #ARM_CORE_MASK
-  and	r0, r0, #ARM_CLUSTER_MASK
-  add	r0, r1, r0, LSR #7
+  // single core, return 1
+  mov r0, #1
   bx 	lr
 
 //UINTN
@@ -43,21 +39,13 @@ ASM_PFX(ArmPlatformGetCorePosition):
 //  VOID
 //  );
 ASM_PFX(ArmPlatformGetPrimaryCoreMpId):
-  LoadConstantToReg (_gPcd_FixedAtBuild_PcdArmPrimaryCore, r0)
-  ldr   r0, [r0]
-  bx    lr
+  // return MPIDR of calling CPU
+  b ArmReadMpidr
 
 //UINTN
 //ArmPlatformIsPrimaryCore (
 //  IN UINTN MpId
 //  );
 ASM_PFX(ArmPlatformIsPrimaryCore):
-  LoadConstantToReg (_gPcd_FixedAtBuild_PcdArmPrimaryCoreMask, r1)
-  ldr   r1, [r1]
-  and   r0, r0, r1
-  LoadConstantToReg (_gPcd_FixedAtBuild_PcdArmPrimaryCore, r1)
-  ldr   r1, [r1]
-  cmp   r0, r1
-  moveq r0, #1
-  movne r0, #0
-  bx    lr
+  mov r0, #1
+  bx  lr
