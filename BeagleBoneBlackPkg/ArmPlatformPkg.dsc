@@ -1,13 +1,13 @@
 #
 #  Copyright (c) 2011-2013, ARM Limited. All rights reserved.
-#  
-#  This program and the accompanying materials                          
-#  are licensed and made available under the terms and conditions of the BSD License         
-#  which accompanies this distribution.  The full text of the license may be found at        
-#  http://opensource.org/licenses/bsd-license.php                                            
 #
-#  THE PROGRAM IS DISTRIBUTED UNDER THE BSD LICENSE ON AN "AS IS" BASIS,                     
-#  WITHOUT WARRANTIES OR REPRESENTATIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.             
+#  This program and the accompanying materials
+#  are licensed and made available under the terms and conditions of the BSD License
+#  which accompanies this distribution.  The full text of the license may be found at
+#  http://opensource.org/licenses/bsd-license.php
+#
+#  THE PROGRAM IS DISTRIBUTED UNDER THE BSD LICENSE ON AN "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR REPRESENTATIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
 #
 #
 ################################################################################
@@ -16,18 +16,21 @@
 #
 ################################################################################
 [Defines]
-  PLATFORM_NAME                  = ArmPlatform
-  PLATFORM_GUID                  = 4fe82b83-9315-4ff3-8cc0-ab77ca93cb7f 
+  PLATFORM_NAME                  = BeagleBoneBlackPkg
+  PLATFORM_GUID                  = 4fe82b83-9315-4ff3-8cc0-ab77ca93cb7f
   PLATFORM_VERSION               = 0.1
-  DSC_SPECIFICATION              = 0x00010005
+  DSC_SPECIFICATION              = 0x00010016
   OUTPUT_DIRECTORY               = Build/$(PLATFORM_NAME)
-  SUPPORTED_ARCHITECTURES        = ARM|AARCH64
+  SUPPORTED_ARCHITECTURES        = ARM
   BUILD_TARGETS                  = DEBUG|RELEASE
   SKUID_IDENTIFIER               = DEFAULT
-  FLASH_DEFINITION               = ArmPlatformPkg/ArmPlatformPkg.fdf
+  FLASH_DEFINITION               = TexasInstrumentsPkg/BeagleBoneBlackPkg/ArmPlatformPkg.fdf
 
 [LibraryClasses.common]
-  ArmPlatformLib|ArmPlatformPkg/Library/ArmPlatformLibNull/ArmPlatformLibNull.inf
+  ArmLib|ArmPkg/Library/ArmLib/ArmV7/ArmV7Lib.inf
+  ArmPlatformLib|TexasInstrumentsPkg/BeagleBoneBlackPkg/Library/Am335xLib/ArmPlatformLibNull.inf
+  ArmCpuLib|ArmPkg/Drivers/ArmCpuLib/ArmCortexA8Lib/ArmCortexA8Lib.inf
+  ArmPlatformStackLib|ArmPlatformPkg/Library/ArmPlatformStackLib/ArmPlatformStackLib.inf
 
 !if $(TARGET) == RELEASE
   DebugLib|MdePkg/Library/BaseDebugLibNull/BaseDebugLibNull.inf
@@ -38,13 +41,19 @@
 #  UncachedMemoryAllocationLib|ArmPkg/Library/DebugUncachedMemoryAllocationLib/DebugUncachedMemoryAllocationLib.inf
 !endif
   DebugPrintErrorLevelLib|MdePkg/Library/BaseDebugPrintErrorLevelLib/BaseDebugPrintErrorLevelLib.inf
-  
-  BaseLib|MdePkg/Library/BaseLib/BaseLib.inf
-  SynchronizationLib|MdePkg/Library/BaseSynchronizationLib/BaseSynchronizationLib.inf
-  PerformanceLib|MdePkg/Library/BasePerformanceLibNull/BasePerformanceLibNull.inf
-  PrintLib|MdePkg/Library/BasePrintLib/BasePrintLib.inf
-  PeCoffGetEntryPointLib|MdePkg/Library/BasePeCoffGetEntryPointLib/BasePeCoffGetEntryPointLib.inf
+
+  MemoryAllocationLib|MdePkg/Library/UefiMemoryAllocationLib/UefiMemoryAllocationLib.inf
+  PeCoffExtraActionLib|ArmPkg/Library/DebugPeCoffExtraActionLib/DebugPeCoffExtraActionLib.inf
   PeCoffLib|MdePkg/Library/BasePeCoffLib/BasePeCoffLib.inf
+  PeCoffGetEntryPointLib|MdePkg/Library/BasePeCoffGetEntryPointLib/BasePeCoffGetEntryPointLib.inf
+
+
+  BaseLib|MdePkg/Library/BaseLib/BaseLib.inf
+  BaseMemoryLib|ArmPkg/Library/BaseMemoryLibStm/BaseMemoryLibStm.inf
+
+  EfiResetSystemLib|TexasInstrumentsPkg/BeagleBoneBlackPkg/Library/ResetSystemLib/BaseResetSystemLibNull.inf
+
+  PrintLib|MdePkg/Library/BasePrintLib/BasePrintLib.inf
   IoLib|MdePkg/Library/BaseIoLibIntrinsic/BaseIoLibIntrinsic.inf
   UefiDecompressLib|MdePkg/Library/BaseUefiDecompressLib/BaseUefiDecompressLib.inf
   CpuLib|MdePkg/Library/BaseCpuLib/BaseCpuLib.inf
@@ -58,7 +67,7 @@
   UefiDriverEntryPoint|MdePkg/Library/UefiDriverEntryPoint/UefiDriverEntryPoint.inf
   UefiApplicationEntryPoint|MdePkg/Library/UefiApplicationEntryPoint/UefiApplicationEntryPoint.inf
   HiiLib|MdeModulePkg/Library/UefiHiiLib/UefiHiiLib.inf
-  UefiHiiServicesLib|MdeModulePkg/Library/UefiHiiServicesLib/UefiHiiServicesLib.inf  
+  UefiHiiServicesLib|MdeModulePkg/Library/UefiHiiServicesLib/UefiHiiServicesLib.inf
 
   UefiRuntimeLib|MdePkg/Library/UefiRuntimeLib/UefiRuntimeLib.inf
 
@@ -66,10 +75,6 @@
   # Assume everything is fixed at build
   #
   PcdLib|MdePkg/Library/BasePcdLibNull/BasePcdLibNull.inf
-  
-  # 1/123 faster than Stm or Vstm version
-  #BaseMemoryLib|MdePkg/Library/BaseMemoryLib/BaseMemoryLib.inf
-  BaseMemoryLib|ArmPkg/Library/BaseMemoryLibStm/BaseMemoryLibStm.inf
 
   # ARM Architectural Libraries
   CacheMaintenanceLib|ArmPkg/Library/ArmCacheMaintenanceLib/ArmCacheMaintenanceLib.inf
@@ -79,61 +84,34 @@
   DmaLib|ArmPkg/Library/ArmDmaLib/ArmDmaLib.inf
   ArmGicLib|ArmPkg/Drivers/ArmGic/ArmGicLib.inf
   ArmSmcLib|ArmPkg/Library/ArmSmcLib/ArmSmcLib.inf
+  SemihostLib|ArmPkg/Library/SemihostLib/SemihostLib.inf
 
-  SerialPortLib|MdePkg/Library/BaseSerialPortLibNull/BaseSerialPortLibNull.inf
+  SerialPortLib|TexasInstrumentsPkg/BeagleBoneBlackPkg/Library/SerialPortLib/SerialPortLib.inf
   TimerLib|MdePkg/Library/BaseTimerLibNullTemplate/BaseTimerLibNullTemplate.inf
   EfiResetSystemLib|EmbeddedPkg/Library/TemplateResetSystemLib/TemplateResetSystemLib.inf
-  RealTimeClockLib|EmbeddedPkg/Library/TemplateRealTimeClockLib/TemplateRealTimeClockLib.inf
-
-  # EBL Related Libraries  
-  EblCmdLib|ArmPlatformPkg/Library/EblCmdLib/EblCmdLib.inf
+  RealTimeClockLib|TexasInstrumentsPkg/BeagleBoneBlackPkg/Library/RealTimeClockLib/PL031RealTimeClockLib.inf
+  DebugAgentLib|MdeModulePkg/Library/DebugAgentLibNull/DebugAgentLibNull.inf
+  DebugAgentTimerLib|EmbeddedPkg/Library/DebugAgentTimerLibNull/DebugAgentTimerLibNull.inf
+ EblCmdLib|ArmPlatformPkg/Library/EblCmdLib/EblCmdLib.inf
   EfiFileLib|EmbeddedPkg/Library/EfiFileLib/EfiFileLib.inf
   EblAddExternalCommandLib|EmbeddedPkg/Library/EblAddExternalCommandLib/EblAddExternalCommandLib.inf
   EblNetworkLib|EmbeddedPkg/Library/EblNetworkLib/EblNetworkLib.inf
-  
-  #
-  # Uncomment (and comment out the next line) For RealView Debugger. The Standard IO window 
-  # in the debugger will show load and unload commands for symbols. You can cut and paste this
-  # into the command window to load symbols. We should be able to use a script to do this, but
-  # the version of RVD I have does not support scripts accessing system memory.
-  #
-  #PeCoffExtraActionLib|ArmPkg/Library/RvdPeCoffExtraActionLib/RvdPeCoffExtraActionLib.inf
-  PeCoffExtraActionLib|ArmPkg/Library/DebugPeCoffExtraActionLib/DebugPeCoffExtraActionLib.inf
-  #PeCoffExtraActionLib|MdePkg/Library/BasePeCoffExtraActionLibNull/BasePeCoffExtraActionLibNull.inf
-    
-  DebugAgentLib|MdeModulePkg/Library/DebugAgentLibNull/DebugAgentLibNull.inf
-  DebugAgentTimerLib|EmbeddedPkg/Library/DebugAgentTimerLibNull/DebugAgentTimerLibNull.inf
-
-  SemihostLib|ArmPkg/Library/SemihostLib/SemihostLib.inf  
 
   # BDS Libraries
   BdsLib|ArmPkg/Library/BdsLib/BdsLib.inf
   FdtLib|EmbeddedPkg/Library/FdtLib/FdtLib.inf
 
-[LibraryClasses.ARM]
-  ArmLib|ArmPkg/Library/ArmLib/ArmV7/ArmV7Lib.inf
-  ArmCpuLib|ArmPkg/Drivers/ArmCpuLib/ArmCortexA9Lib/ArmCortexA9Lib.inf
-
-[LibraryClasses.AARCH64]
-  ArmLib|ArmPkg/Library/ArmLib/AArch64/AArch64Lib.inf
-  ArmCpuLib|ArmPkg/Drivers/ArmCpuLib/ArmCortexAEMv8Lib/ArmCortexAEMv8Lib.inf
-
 [LibraryClasses.common.SEC]
-  ArmPlatformSecLib|ArmPlatformPkg/Library/ArmPlatformSecLibNull/ArmPlatformLibNullSec.inf
-  ArmPlatformLib|ArmPlatformPkg/Library/ArmPlatformLibNull/ArmPlatformLibNullSec.inf
-  ArmTrustedMonitorLib|ArmPlatformPkg/Library/ArmTrustedMonitorLibNull/ArmTrustedMonitorLibNull.inf
+  ArmPlatformSecLib|TexasInstrumentsPkg/BeagleBoneBlackPkg/Library/Am335xLib/ArmPlatformLibNullSec.inf
+  ArmPlatformLib|TexasInstrumentsPkg/BeagleBoneBlackPkg/Library/Am335xLib/ArmPlatformLibNullSec.inf
+  ArmTrustedMonitorLib|TexasInstrumentsPkg/BeagleBoneBlackPkg/Library/ArmTrustedMonitorLibNull/ArmTrustedMonitorLibNull.inf
 
-  ArmPlatformSecExtraActionLib|ArmPlatformPkg/Library/DebugSecExtraActionLib/DebugSecExtraActionLib.inf
-  ArmPlatformGlobalVariableLib|ArmPlatformPkg/Library/ArmPlatformGlobalVariableLib/Sec/SecArmPlatformGlobalVariableLib.inf
-  
   DebugAgentLib|ArmPkg/Library/DebugAgentSymbolsBaseLib/DebugAgentSymbolsBaseLib.inf
   DefaultExceptionHandlerLib|ArmPkg/Library/DefaultExceptionHandlerLib/DefaultExceptionHandlerLibBase.inf
 
 [LibraryClasses.ARM.SEC]
   ArmLib|ArmPkg/Library/ArmLib/ArmV7/ArmV7LibSec.inf
 
-[LibraryClasses.AARCH64.SEC]
-  ArmLib|ArmPkg/Library/ArmLib/AArch64/AArch64LibSec.inf
 
 [LibraryClasses.common.PEI_CORE]
   HobLib|MdePkg/Library/PeiHobLib/PeiHobLib.inf
@@ -144,12 +122,14 @@
   ReportStatusCodeLib|MdeModulePkg/Library/PeiReportStatusCodeLib/PeiReportStatusCodeLib.inf
   OemHookStatusCodeLib|MdeModulePkg/Library/OemHookStatusCodeLibNull/OemHookStatusCodeLibNull.inf
   PeCoffGetEntryPointLib|MdePkg/Library/BasePeCoffGetEntryPointLib/BasePeCoffGetEntryPointLib.inf
+    PeCoffLib|MdePkg/Library/BasePeCoffLib/BasePeCoffLib.inf
+
   UefiDecompressLib|MdePkg/Library/BaseUefiDecompressLib/BaseUefiDecompressLib.inf
   ExtractGuidedSectionLib|MdePkg/Library/PeiExtractGuidedSectionLib/PeiExtractGuidedSectionLib.inf
-  
+
   ArmPlatformGlobalVariableLib|ArmPlatformPkg/Library/ArmPlatformGlobalVariableLib/Pei/PeiArmPlatformGlobalVariableLib.inf
   PeiServicesTablePointerLib|ArmPlatformPkg/Library/PeiServicesTablePointerLib/PeiServicesTablePointerLib.inf
-  
+
 [LibraryClasses.common.PEIM]
   HobLib|MdePkg/Library/PeiHobLib/PeiHobLib.inf
   PeiServicesLib|MdePkg/Library/PeiServicesLib/PeiServicesLib.inf
@@ -232,11 +212,11 @@
   gEfiMdePkgTokenSpaceGuid.PcdDriverDiagnosticsDisable|TRUE
   gEfiMdePkgTokenSpaceGuid.PcdComponentName2Disable|TRUE
   gEfiMdePkgTokenSpaceGuid.PcdDriverDiagnostics2Disable|TRUE
-  
+
   #
   # Control what commands are supported from the UI
   # Turn these on and off to add features or save size
-  #  
+  #
   gEmbeddedTokenSpaceGuid.PcdEmbeddedMacBoot|TRUE
   gEmbeddedTokenSpaceGuid.PcdEmbeddedDirCmd|TRUE
   gEmbeddedTokenSpaceGuid.PcdEmbeddedHobCmd|TRUE
@@ -246,17 +226,17 @@
   gEmbeddedTokenSpaceGuid.PcdEmbeddedScriptCmd|FALSE
 
   gEmbeddedTokenSpaceGuid.PcdCacheEnable|TRUE
-  
+
   # Use the Vector Table location in CpuDxe. We will not copy the Vector Table at PcdCpuVectorBaseAddress
   gArmTokenSpaceGuid.PcdRelocateVectorTable|FALSE
-  
+
   gEmbeddedTokenSpaceGuid.PcdPrePiProduceMemoryTypeInformationHob|TRUE
-  
+
   gEfiMdeModulePkgTokenSpaceGuid.PcdTurnOffUsbLegacySupport|TRUE
 
 [PcdsFixedAtBuild.common]
   gArmPlatformTokenSpaceGuid.PcdFirmwareVendor|"ARM Platform"
-  
+
   gEmbeddedTokenSpaceGuid.PcdEmbeddedPrompt|"ArmPlatform"
   gEfiMdePkgTokenSpaceGuid.PcdMaximumUnicodeStringLength|1000000
   gEfiMdePkgTokenSpaceGuid.PcdMaximumAsciiStringLength|1000000
@@ -302,12 +282,12 @@
   gEmbeddedTokenSpaceGuid.PcdEmbeddedAutomaticBootCommand|""
   gEmbeddedTokenSpaceGuid.PcdEmbeddedDefaultTextColor|0x07
   gEmbeddedTokenSpaceGuid.PcdEmbeddedMemVariableStoreSize|0x10000
-  
+
   #
   # Optional feature to help prevent EFI memory map fragments
   # Turned on and off via: PcdPrePiProduceMemoryTypeInformationHob
-  # Values are in EFI Pages (4K). DXE Core will make sure that 
-  # at least this much of each type of memory can be allocated 
+  # Values are in EFI Pages (4K). DXE Core will make sure that
+  # at least this much of each type of memory can be allocated
   # from a single memory range. This way you only end up with
   # maximum of two fragements for each type in the memory map
   # (the memory used, and the free memory that was prereserved
@@ -322,12 +302,31 @@
   gEmbeddedTokenSpaceGuid.PcdMemoryTypeEfiBootServicesData|20000
   gEmbeddedTokenSpaceGuid.PcdMemoryTypeEfiLoaderCode|20
   gEmbeddedTokenSpaceGuid.PcdMemoryTypeEfiLoaderData|0
-    
+
+  # BBB PCDs
+  gArmTokenSpaceGuid.PcdVFPEnabled|1
+  gArmTokenSpaceGuid.PcdSystemMemoryBase|0x80000000
+  gArmTokenSpaceGuid.PcdSystemMemorySize|0x08000000
+
+  # Size of the region used by UEFI in permanent memory (Reserved 16MB)
+  gArmPlatformTokenSpaceGuid.PcdSystemMemoryUefiRegionSize|0x01000000
+
+  # Size of the region reserved for fixed address allocations (Reserved 32MB)
+  gArmTokenSpaceGuid.PcdArmLinuxKernelMaxOffset|0x02000000
+
+  gArmTokenSpaceGuid.PcdCpuVectorBaseAddress|0x80008000
+  gArmTokenSpaceGuid.PcdCpuResetAddress|0x80008000
+
+  gEmbeddedTokenSpaceGuid.PcdTimerPeriod|100000
+  gEmbeddedTokenSpaceGuid.PcdEmbeddedPerformanceCounterPeriodInNanoseconds|77
+  gEmbeddedTokenSpaceGuid.PcdEmbeddedPerformanceCounterFrequencyInHz|13000000
+
+
   #
   # ARM Pcds
   #
   gArmTokenSpaceGuid.PcdArmUncachedMemoryMask|0x0000000000000000
-  
+
   # Stacks for MPCores in Secure World
   gArmPlatformTokenSpaceGuid.PcdCPUCoresSecStackBase|0
   # Stacks for MPCores in Monitor Mode
@@ -344,30 +343,30 @@
 #
 ################################################################################
 [Components.common]
-  
+
   #
   # SEC
   #
-  ArmPlatformPkg/Sec/Sec.inf {
+  TexasInstrumentsPkg/BeagleBoneBlackPkg/Sec/Sec.inf {
     <LibraryClasses>
       # Use the implementation which set the Secure bits
       ArmGicLib|ArmPkg/Drivers/ArmGic/ArmGicSecLib.inf
   }
-  
+
   #
   # PEI Phase modules
   #
-  ArmPlatformPkg/PrePeiCore/PrePeiCoreUniCore.inf {
-    <LibraryClasses>
-      ArmPlatformGlobalVariableLib|ArmPlatformPkg/Library/ArmPlatformGlobalVariableLib/Pei/PeiArmPlatformGlobalVariableLib.inf
-  }
+  #ArmPlatformPkg/PrePeiCore/PrePeiCoreUniCore.inf {
+  #  <LibraryClasses>
+  #    ArmPlatformGlobalVariableLib|ArmPlatformPkg/Library/ArmPlatformGlobalVariableLib/Pei/PeiArmPlatformGlobalVariableLib.inf
+  #}
   MdeModulePkg/Core/Pei/PeiMain.inf
   MdeModulePkg/Universal/PCD/Pei/Pcd.inf  {
     <LibraryClasses>
       PcdLib|MdePkg/Library/BasePcdLibNull/BasePcdLibNull.inf
   }
-  ArmPlatformPkg/PlatformPei/PlatformPeim.inf
-  ArmPlatformPkg/MemoryInitPei/MemoryInitPeim.inf
+  #ArmPlatformPkg/PlatformPei/PlatformPeim.inf
+  #ArmPlatformPkg/MemoryInitPei/MemoryInitPeim.inf
   ArmPkg/Drivers/CpuPei/CpuPei.inf
   IntelFrameworkModulePkg/Universal/StatusCode/Pei/StatusCodePei.inf
   Nt32Pkg/BootModePei/BootModePei.inf
@@ -389,41 +388,41 @@
   #
   # Architectural Protocols
   #
-  ArmPkg/Drivers/CpuDxe/CpuDxe.inf  
+  ArmPkg/Drivers/CpuDxe/CpuDxe.inf
   MdeModulePkg/Core/RuntimeDxe/RuntimeDxe.inf
   MdeModulePkg/Universal/SecurityStubDxe/SecurityStubDxe.inf
   MdeModulePkg/Universal/WatchdogTimerDxe/WatchdogTimer.inf
   MdeModulePkg/Universal/CapsuleRuntimeDxe/CapsuleRuntimeDxe.inf
   MdeModulePkg/Universal/Variable/EmuRuntimeDxe/EmuVariableRuntimeDxe.inf
-  EmbeddedPkg/EmbeddedMonotonicCounter/EmbeddedMonotonicCounter.inf  
-  
+  EmbeddedPkg/EmbeddedMonotonicCounter/EmbeddedMonotonicCounter.inf
+
   EmbeddedPkg/ResetRuntimeDxe/ResetRuntimeDxe.inf
   EmbeddedPkg/RealTimeClockRuntimeDxe/RealTimeClockRuntimeDxe.inf
   EmbeddedPkg/MetronomeDxe/MetronomeDxe.inf
-  
+
   # Simple TextIn/TextOut for UEFI Terminal
   EmbeddedPkg/SimpleTextInOutSerial/SimpleTextInOutSerial.inf
-  
+
   #
   # Semi-hosting filesystem
   #
   ArmPkg/Filesystem/SemihostFs/SemihostFs.inf
-  
+
   #
   # FAT filesystem + GPT/MBR partitioning
   #
   MdeModulePkg/Universal/Disk/DiskIoDxe/DiskIoDxe.inf
   MdeModulePkg/Universal/Disk/PartitionDxe/PartitionDxe.inf
   MdeModulePkg/Universal/Disk/UnicodeCollation/EnglishDxe/EnglishDxe.inf
-  
+
   #
   # Application
-  #  
+  #
   EmbeddedPkg/Ebl/Ebl.inf
 
   #
   # Bds
   #
   MdeModulePkg/Universal/DevicePathDxe/DevicePathDxe.inf
-  ArmPlatformPkg/Bds/Bds.inf
-  
+  #ArmPlatformPkg/Bds/Bds.inf
+
