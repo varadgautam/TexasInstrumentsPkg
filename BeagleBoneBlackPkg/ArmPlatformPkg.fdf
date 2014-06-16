@@ -24,12 +24,6 @@
 #
 ################################################################################
 
-[FD.Sec_ArmPlatform_EFI]
-BaseAddress   = 0x80200000|gArmTokenSpaceGuid.PcdSecureFdBaseAddress  #The base address of the Secure FLASH Device.
-Size          = 0x00020000|gArmTokenSpaceGuid.PcdSecureFdSize         #The size in bytes of the Secure FLASH Device
-ErasePolarity = 1
-BlockSize     = 0x00002000
-NumBlocks     = 0x10
 
 ################################################################################
 #
@@ -47,19 +41,16 @@ NumBlocks     = 0x10
 #
 ################################################################################
 
-0x00000000|0x00020000
-gArmTokenSpaceGuid.PcdSecureFvBaseAddress|gArmTokenSpaceGuid.PcdSecureFvSize
-FV = FVMAIN_SEC
 
 
 [FD.ArmPlatform_EFI]
-BaseAddress   = 0xEC200000|gArmTokenSpaceGuid.PcdFdBaseAddress  # The base address of the Firmware in NOR Flash.
+BaseAddress   = 0x80008000|gArmTokenSpaceGuid.PcdFdBaseAddress  # The base address of the Firmware in NOR Flash.
 Size          = 0x00200000|gArmTokenSpaceGuid.PcdFdSize         # The size in bytes of the FLASH Device
 ErasePolarity = 1
 
 # This one is tricky, it must be: BlockSize * NumBlocks = Size
-BlockSize     = 0x00001000
-NumBlocks     = 0x200
+BlockSize     = 0x01
+NumBlocks     = 0x00200000
 
 ################################################################################
 #
@@ -93,29 +84,8 @@ FV = FVMAIN_COMPACT
 #
 ################################################################################
 
-[FV.FVMAIN_SEC]
-FvAlignment        = 8
-ERASE_POLARITY     = 1
-MEMORY_MAPPED      = TRUE
-STICKY_WRITE       = TRUE
-LOCK_CAP           = TRUE
-LOCK_STATUS        = TRUE
-WRITE_DISABLED_CAP = TRUE
-WRITE_ENABLED_CAP  = TRUE
-WRITE_STATUS       = TRUE
-WRITE_LOCK_CAP     = TRUE
-WRITE_LOCK_STATUS  = TRUE
-READ_DISABLED_CAP  = TRUE
-READ_ENABLED_CAP   = TRUE
-READ_STATUS        = TRUE
-READ_LOCK_CAP      = TRUE
-READ_LOCK_STATUS   = TRUE
-
-  INF TexasInstrumentsPkg/BeagleBoneBlackPkg/Sec/Sec.inf
-
-
 [FV.FvMain]
-BlockSize          = 0x40
+BlockSize          = 0x01
 NumBlocks          = 0         # This FV gets compressed so make it just big enough
 FvAlignment        = 8         # FV alignment and FV attributes setting.
 ERASE_POLARITY     = 1

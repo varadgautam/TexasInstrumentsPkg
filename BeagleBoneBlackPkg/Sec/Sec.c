@@ -25,12 +25,9 @@
 #define SerialPrint(txt)  SerialPortWrite ((UINT8*)txt, AsciiStrLen(txt)+1);
 
 VOID
-CEntryPoint (
-  IN  UINTN                     MpId,
-  IN  UINTN                     SecBootMode
-  )
+CEntryPoint ()
 {
-  
+
 
   // Invalidate the data cache. Doesn't have to do the Data cache clean.
   ArmInvalidateDataCache ();
