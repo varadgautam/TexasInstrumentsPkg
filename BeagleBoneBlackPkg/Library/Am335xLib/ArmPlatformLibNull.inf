@@ -35,4 +35,3 @@
 
 [Sources.Arm]
   ArmPlatformHelper.S    | GCC
-  ArmPlatformHelper.asm  | RVCT

@@ -14,7 +14,7 @@
 #**/
 
 [Defines]
-  INF_VERSION                    = 0x00010005
+  INF_VERSION                    = 0x00010016
   BASE_NAME                      = ArmPlatformSec
   FILE_GUID                      = c536bbfe-c813-4e48-9f90-01fe1ecf9d54
   MODULE_TYPE                    = SEC
@@ -25,10 +25,8 @@
 
 [Sources.ARM]
   Arch.c
-  Helper.asm           | RVCT
   Helper.S             | GCC
   SecEntryPoint.S      | GCC
-  SecEntryPoint.asm    | RVCT
 
 [Packages]
   MdePkg/MdePkg.dec
