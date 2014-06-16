@@ -28,12 +28,13 @@ VOID
 CEntryPoint ()
 {
   // CPU specific settings
-  ArmCpuSetup (MpId);
+  ArmEnableBranchPrediction ();
 
   SerialPortInitialize ();
+  char c[1] = "x";
 
   while (TRUE){
-    SerialPrint("Uart worx");
+    SerialPortWrite((UINT8*) c, 1);
   }
 
   ASSERT (0); // never return
