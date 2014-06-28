@@ -12,30 +12,82 @@
 *  WITHOUT WARRANTIES OR REPRESENTATIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
 *
 **/
-
+#include <Library/DebugLib.h>
+#include <Library/PeCoffGetEntryPointLib.h>
 #include <Library/ArmTrustedMonitorLib.h>
 #include <Library/DebugAgentLib.h>
 #include <Library/PrintLib.h>
 #include <Library/BaseMemoryLib.h>
 #include <Library/SerialPortLib.h>
 #include <Library/ArmGicLib.h>
-
+#include <Ppi/GuidedSectionExtraction.h>
+#include <Guid/LzmaDecompress.h>
+#include <Library/PrePiLib.h>
 #include "SecInternal.h"
+#include "LzmaDecompress.h"
 
 #define SerialPrint(txt)  SerialPortWrite ((UINT8*)txt, AsciiStrLen(txt)+1);
 
+EFI_STATUS
+EFIAPI
+ExtractGuidedSectionLibConstructor (
+  VOID
+  );
+
+EFI_STATUS
+EFIAPI
+LzmaDecompressLibConstructor (
+  VOID
+  );
+
 VOID
-CEntryPoint ()
+CEntryPoint (
+  IN  VOID  *MemoryBase,
+  IN  UINTN MemorySize,
+  IN  VOID  *StackBase,
+  IN  UINTN StackSize
+  )
 {
+  VOID *HobBase;
+
+  // Build a basic HOB list
+  HobBase = (VOID *)(UINTN)(FixedPcdGet32(PcdEmbeddedFdBaseAddress) + FixedPcdGet32(PcdEmbeddedFdSize));
+  CreateHobList (MemoryBase, MemorySize, HobBase, StackBase);
+
   // CPU specific settings
   ArmEnableBranchPrediction ();
 
-  SerialPortInitialize ();
-  char c[1] = "x";
+  // Add memory allocation hob for relocated FD
+  BuildMemoryAllocationHob (FixedPcdGet32(PcdEmbeddedFdBaseAddress), FixedPcdGet32(PcdEmbeddedFdSize), EfiBootServicesData);
 
-  while (TRUE){
-    SerialPortWrite((UINT8*) c, 1);
-  }
+  // Add the FVs to the hob list
+  BuildFvHob (PcdGet32(PcdFlashFvMainBase), PcdGet32(PcdFlashFvMainSize));
+
+  SerialPortInitialize ();
+
+  InitializeDebugAgent (DEBUG_AGENT_INIT_PREMEM_SEC, NULL, NULL);
+  SaveAndSetDebugTimerInterrupt (TRUE);
+
+  DEBUG ((EFI_D_ERROR, "UART ready\n"));
+
+  // BuildGuidDataHob
+  ExtractGuidedSectionLibConstructor ();
+
+  // Build HOBs manually, since no PrePeiMain execution
+  BuildPeCoffLoaderHob ();
+  BuildExtractSectionHob (
+    &gLzmaCustomDecompressGuid,
+    LzmaGuidedSectionGetInfo,
+    LzmaGuidedSectionExtraction
+    );
+
+  // Assume the FV that contains the SEC (our code) also contains a compressed FV.
+  DecompressFirstFv ();
+
+  // Load the DXE Core and transfer control to it
+  LoadDxeCoreFromFv (NULL, 0);
+
+  // DXE Core should always load and never return
 
   ASSERT (0); // never return
 }

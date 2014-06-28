@@ -31,8 +31,10 @@
 [Packages]
   MdePkg/MdePkg.dec
   MdeModulePkg/MdeModulePkg.dec
+  EmbeddedPkg/EmbeddedPkg.dec
   ArmPkg/ArmPkg.dec
   ArmPlatformPkg/ArmPlatformPkg.dec
+  IntelFrameworkModulePkg/IntelFrameworkModulePkg.dec
 
 [LibraryClasses]
   ArmCpuLib
@@ -42,11 +44,13 @@
   ArmTrustedMonitorLib
   BaseLib
   DebugLib
-  #DebugAgentLib
   IoLib
-  ArmGicLib
-  PrintLib
-  SerialPortLib
+  ExtractGuidedSectionLib
+  LzmaDecompressLib
+  PeCoffGetEntryPointLib
+  DebugAgentLib
+  MemoryAllocationLib
+  PrePiHobListPointerLib
 
 [FixedPcd.common]
   gEfiMdeModulePkgTokenSpaceGuid.PcdFirmwareVersionString
@@ -72,6 +76,15 @@
   gArmTokenSpaceGuid.PcdGicInterruptInterfaceBase
 
   gArmPlatformTokenSpaceGuid.PcdSecGlobalVariableSize
+  gEmbeddedTokenSpaceGuid.PcdEmbeddedFdBaseAddress
+  gEmbeddedTokenSpaceGuid.PcdEmbeddedFdSize
+  gEmbeddedTokenSpaceGuid.PcdFlashFvMainBase
+  gEmbeddedTokenSpaceGuid.PcdFlashFvMainSize
+  gEmbeddedTokenSpaceGuid.PcdMemoryBase
+  gEmbeddedTokenSpaceGuid.PcdMemorySize
+  gArmTokenSpaceGuid.PcdCpuVectorBaseAddress
+  gEmbeddedTokenSpaceGuid.PcdPrePiStackSize
+  gEmbeddedTokenSpaceGuid.PcdPrePiStackBase
 
 [FixedPcd.ARM]
   gArmTokenSpaceGuid.PcdArmNsacr
