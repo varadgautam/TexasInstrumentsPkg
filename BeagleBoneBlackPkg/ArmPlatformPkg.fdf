@@ -26,10 +26,10 @@
 
 [FD.Sec_ArmPlatform_EFI]
 BaseAddress   = 0x80008000|gArmTokenSpaceGuid.PcdSecureFdBaseAddress  #The base address of the Secure FLASH Device.
-Size          = 0x00020000|gArmTokenSpaceGuid.PcdSecureFdSize         #The size in bytes of the Secure FLASH Device
+Size          = 0xff000|gArmTokenSpaceGuid.PcdSecureFdSize         #The size in bytes of the Secure FLASH Device
 ErasePolarity = 1
-BlockSize     = 0x00002000
-NumBlocks     = 0x10
+BlockSize     = 0x01
+NumBlocks     = 0xff000
 
 ################################################################################
 #
@@ -47,7 +47,7 @@ NumBlocks     = 0x10
 #
 ################################################################################
 
-0x00000000|0x00020000
+0x00000000|0xff000
 gArmTokenSpaceGuid.PcdSecureFvBaseAddress|gArmTokenSpaceGuid.PcdSecureFvSize
 FV = FVMAIN_SEC
 
@@ -167,9 +167,9 @@ READ_LOCK_STATUS   = TRUE
   INF MdeModulePkg/Universal/Disk/UnicodeCollation/EnglishDxe/EnglishDxe.inf
 
   #
-  # UEFI application (Shell Embedded Boot Loader)
+  # UEFI application (Shell)
   #
-  INF EmbeddedPkg/Ebl/Ebl.inf
+  INF  ShellPkg/Application/Shell/Shell.inf
 
   #
   # Bds
