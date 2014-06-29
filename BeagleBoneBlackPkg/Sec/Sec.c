@@ -40,6 +40,8 @@ LzmaDecompressLibConstructor (
   VOID
   );
 
+UINTN mGlobalVariableBase = 0;
+
 VOID
 CEntryPoint (
   IN  VOID  *MemoryBase,
@@ -49,7 +51,6 @@ CEntryPoint (
   )
 {
   VOID *HobBase;
-
   // Build a basic HOB list
   HobBase = (VOID *)(UINTN)(FixedPcdGet32(PcdEmbeddedFdBaseAddress) + FixedPcdGet32(PcdEmbeddedFdSize));
   CreateHobList (MemoryBase, MemorySize, HobBase, StackBase);

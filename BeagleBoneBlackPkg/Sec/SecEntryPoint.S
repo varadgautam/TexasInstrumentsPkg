@@ -26,6 +26,25 @@ ASM_PFX(_ModuleEntryPoint):
   // Doing a second stage boot from SPL
   // mem, stack all ready already
 
+stack_pointer_setup:
+
+  //
+  // Set stack based on PCD values. Need to do it this way to make C code work
+  // when it runs from FLASH.
+  //
+  LoadConstantToReg (FixedPcdGet32(PcdPrePiStackBase) ,r2)    /* stack base arg2  */
+  LoadConstantToReg (FixedPcdGet32(PcdPrePiStackSize) ,r3)    /* stack size arg3  */
+  add     r4, r2, r3
+
+  //Enter SVC mode and set up SVC stack pointer
+  mov     r0,#0x13|0x80|0x40
+  msr     CPSR_c,r0
+  mov     r13,r4
+
+  // Call C entry point
+  LoadConstantToReg (FixedPcdGet32(PcdMemorySize) ,r1)    /* memory size arg1          */
+  LoadConstantToReg (FixedPcdGet32(PcdMemoryBase) ,r0)    /* memory size arg0         */
+
 _CallCEntryPoint:
   blx   ASM_PFX(CEntryPoint)
 
