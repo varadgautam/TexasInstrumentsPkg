@@ -36,14 +36,14 @@
   HiiLib|MdeModulePkg/Library/UefiHiiLib/UefiHiiLib.inf
   UefiHiiServicesLib|MdeModulePkg/Library/UefiHiiServicesLib/UefiHiiServicesLib.inf
 
-!if $(TARGET) == RELEASE
-  DebugLib|MdePkg/Library/BaseDebugLibNull/BaseDebugLibNull.inf
-  UncachedMemoryAllocationLib|ArmPkg/Library/UncachedMemoryAllocationLib/UncachedMemoryAllocationLib.inf
-!else
+#!if $(TARGET) == RELEASE
+#  DebugLib|MdePkg/Library/BaseDebugLibNull/BaseDebugLibNull.inf
+#  UncachedMemoryAllocationLib|ArmPkg/Library/UncachedMemoryAllocationLib/UncachedMemoryAllocationLib.inf
+#!else
   DebugLib|MdePkg/Library/BaseDebugLibSerialPort/BaseDebugLibSerialPort.inf
   UncachedMemoryAllocationLib|ArmPkg/Library/UncachedMemoryAllocationLib/UncachedMemoryAllocationLib.inf
 #  UncachedMemoryAllocationLib|ArmPkg/Library/DebugUncachedMemoryAllocationLib/DebugUncachedMemoryAllocationLib.inf
-!endif
+#!endif
   DebugPrintErrorLevelLib|MdePkg/Library/BaseDebugPrintErrorLevelLib/BaseDebugPrintErrorLevelLib.inf
 
   MemoryAllocationLib|MdePkg/Library/UefiMemoryAllocationLib/UefiMemoryAllocationLib.inf
@@ -63,7 +63,7 @@ SerialPortExtLib|EmbeddedPkg/Library/TemplateSerialPortExtLib/TemplateSerialPort
   PeCoffGetEntryPointLib|MdePkg/Library/BasePeCoffGetEntryPointLib/BasePeCoffGetEntryPointLib.inf
 
   PeCoffExtraActionLib|ArmPkg/Library/DebugPeCoffExtraActionLib/DebugPeCoffExtraActionLib.inf
-  PeCoffLib|MdePkg/Library/BasePeCoffLib/BasePeCoffLib.inf
+#  PeCoffLib|MdePkg/Library/BasePeCoffLib/BasePeCoffLib.inf
   PeCoffGetEntryPointLib|MdePkg/Library/BasePeCoffGetEntryPointLib/BasePeCoffGetEntryPointLib.inf
 
 
@@ -314,11 +314,11 @@ PrePiHobListPointerLib|ArmPlatformPkg/Library/PrePiHobListPointerLib/PrePiHobLis
   # CLEAR_MEMORY_ENABLED       0x08
   # ASSERT_BREAKPOINT_ENABLED  0x10
   # ASSERT_DEADLOOP_ENABLED    0x20
-!if $(TARGET) == RELEASE
-  gEfiMdePkgTokenSpaceGuid.PcdDebugPropertyMask|0x21
-!else
+#!if $(TARGET) == RELEASE
+#  gEfiMdePkgTokenSpaceGuid.PcdDebugPropertyMask|0x21
+#!else
   gEfiMdePkgTokenSpaceGuid.PcdDebugPropertyMask|0x2f
-!endif
+#!endif
 
   #  DEBUG_INIT      0x00000001  // Initialization
   #  DEBUG_WARN      0x00000002  // Warnings
@@ -408,6 +408,7 @@ PrePiHobListPointerLib|ArmPlatformPkg/Library/PrePiHobListPointerLib/PrePiHobLis
   #
   # SEC
   #
+  #ArmPlatformPkg/PrePi/PeiUniCore.inf
   TexasInstrumentsPkg/BeagleBoneBlackPkg/Sec/Sec.inf {
     <LibraryClasses>
       # Use the implementation which set the Secure bits
@@ -490,6 +491,13 @@ PrePiHobListPointerLib|ArmPlatformPkg/Library/PrePiHobListPointerLib/PrePiHobLis
   EmbeddedPkg/Ebl/Ebl.inf
 
   #
+  # Bds
+  #
+  MdeModulePkg/Universal/DevicePathDxe/DevicePathDxe.inf
+  MdeModulePkg/Universal/HiiDatabaseDxe/HiiDatabaseDxe.inf
+  ArmPlatformPkg/Bds/Bds.inf
+
+  #
   # Shell
   #
   ShellPkg/Application/Shell/Shell.inf {
@@ -515,10 +523,4 @@ PrePiHobListPointerLib|ArmPlatformPkg/Library/PrePiHobListPointerLib/PrePiHobLis
     <PcdsFeatureFlag>
       gEfiShellPkgTokenSpaceGuid.PcdShellLibAutoInitialize|FALSE
   }
-
-  #
-  # Bds
-  #
-  MdeModulePkg/Universal/DevicePathDxe/DevicePathDxe.inf
-  #ArmPlatformPkg/Bds/Bds.inf
 

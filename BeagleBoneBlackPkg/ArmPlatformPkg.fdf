@@ -24,7 +24,7 @@
 #
 ################################################################################
 
-[FD.Sec_ArmPlatform_EFI]
+[FD.Sec_Armplatform_EFI]
 BaseAddress   = 0x80008000|gArmTokenSpaceGuid.PcdSecureFdBaseAddress  #The base address of the Secure FLASH Device.
 Size          = 0xff000|gArmTokenSpaceGuid.PcdSecureFdSize         #The size in bytes of the Secure FLASH Device
 ErasePolarity = 1
@@ -46,14 +46,13 @@ NumBlocks     = 0xff000
 # RegionType <FV, DATA, or FILE>
 #
 ################################################################################
-
-0x00000000|0xff000
+0x00000000|0x00020000
 gArmTokenSpaceGuid.PcdSecureFvBaseAddress|gArmTokenSpaceGuid.PcdSecureFvSize
 FV = FVMAIN_SEC
 
 
 [FD.ArmPlatform_EFI]
-BaseAddress   = 0x80028000|gArmTokenSpaceGuid.PcdFdBaseAddress  # The base address of the Firmware in NOR Flash.
+BaseAddress   = 0x80008000|gArmTokenSpaceGuid.PcdFdBaseAddress  # The base address of the Firmware in NOR Flash.
 Size          = 0x00200000|gArmTokenSpaceGuid.PcdFdSize         # The size in bytes of the FLASH Device
 ErasePolarity = 1
 
@@ -115,7 +114,7 @@ READ_LOCK_STATUS   = TRUE
 
 
 [FV.FvMain]
-BlockSize          = 0x40
+BlockSize          = 0x1
 NumBlocks          = 0         # This FV gets compressed so make it just big enough
 FvAlignment        = 8         # FV alignment and FV attributes setting.
 ERASE_POLARITY     = 1
@@ -140,12 +139,20 @@ READ_LOCK_STATUS   = TRUE
   # PI DXE Drivers producing Architectural Protocols (EFI Services)
   #
   INF ArmPkg/Drivers/CpuDxe/CpuDxe.inf
+
   INF MdeModulePkg/Core/RuntimeDxe/RuntimeDxe.inf
   INF MdeModulePkg/Universal/SecurityStubDxe/SecurityStubDxe.inf
   INF MdeModulePkg/Universal/WatchdogTimerDxe/WatchdogTimer.inf
   INF MdeModulePkg/Universal/CapsuleRuntimeDxe/CapsuleRuntimeDxe.inf
   INF MdeModulePkg/Universal/Variable/EmuRuntimeDxe/EmuVariableRuntimeDxe.inf
   INF EmbeddedPkg/EmbeddedMonotonicCounter/EmbeddedMonotonicCounter.inf
+
+  INF MdeModulePkg/Universal/Console/ConPlatformDxe/ConPlatformDxe.inf
+  INF MdeModulePkg/Universal/Console/ConSplitterDxe/ConSplitterDxe.inf
+  INF MdeModulePkg/Universal/Console/GraphicsConsoleDxe/GraphicsConsoleDxe.inf
+  INF EmbeddedPkg/SerialDxe/SerialDxe.inf
+  INF MdeModulePkg/Universal/Console/TerminalDxe/TerminalDxe.inf
+
   INF EmbeddedPkg/ResetRuntimeDxe/ResetRuntimeDxe.inf
   INF EmbeddedPkg/RealTimeClockRuntimeDxe/RealTimeClockRuntimeDxe.inf
   INF EmbeddedPkg/MetronomeDxe/MetronomeDxe.inf
@@ -174,8 +181,9 @@ READ_LOCK_STATUS   = TRUE
   #
   # Bds
   #
-  #INF MdeModulePkg/Universal/DevicePathDxe/DevicePathDxe.inf
-  #INF TexasInstrumentsPkg/BeagleBoneBlackPkg/Bds/Bds.inf
+  INF MdeModulePkg/Universal/DevicePathDxe/DevicePathDxe.inf
+  INF MdeModulePkg/Universal/HiiDatabaseDxe/HiiDatabaseDxe.inf
+  INF ArmPlatformPkg/Bds/Bds.inf
 
 
 [FV.FVMAIN_COMPACT]
@@ -197,14 +205,14 @@ READ_LOCK_CAP      = TRUE
 READ_LOCK_STATUS   = TRUE
 
   #INF ArmPlatformPkg/PrePeiCore/PrePeiCoreUniCore.inf
-  INF MdeModulePkg/Core/Pei/PeiMain.inf
+  #INF MdeModulePkg/Core/Pei/PeiMain.inf
   #INF ArmPlatformPkg/PlatformPei/PlatformPeim.inf
   #INF ArmPlatformPkg/MemoryInitPei/MemoryInitPeim.inf
-  INF ArmPkg/Drivers/CpuPei/CpuPei.inf
-  INF MdeModulePkg/Universal/PCD/Pei/Pcd.inf
-  INF IntelFrameworkModulePkg/Universal/StatusCode/Pei/StatusCodePei.inf
-  INF MdeModulePkg/Universal/Variable/Pei/VariablePei.inf
-  INF MdeModulePkg/Core/DxeIplPeim/DxeIpl.inf
+  #INF ArmPkg/Drivers/CpuPei/CpuPei.inf
+  #INF MdeModulePkg/Universal/PCD/Pei/Pcd.inf
+  #INF IntelFrameworkModulePkg/Universal/StatusCode/Pei/StatusCodePei.inf
+  #INF MdeModulePkg/Universal/Variable/Pei/VariablePei.inf
+  #INF MdeModulePkg/Core/DxeIplPeim/DxeIpl.inf
 
   FILE FV_IMAGE = 9E21FD93-9C72-4c15-8C4B-E77F1DB2D792 {
     SECTION GUIDED EE4E5898-3914-4259-9D6E-DC7BD79403CF PROCESSING_REQUIRED = TRUE {
@@ -281,14 +289,6 @@ READ_LOCK_STATUS   = TRUE
     UI           STRING="$(MODULE_NAME)" Optional
   }
 
-[Rule.Common.UEFI_DRIVER.BINARY]
-  FILE DRIVER = $(NAMED_GUID) {
-    DXE_DEPEX DXE_DEPEX Optional      |.depex
-    PE32      PE32                    |.efi
-    UI        STRING="$(MODULE_NAME)" Optional
-    VERSION   STRING="$(INF_VERSION)" Optional BUILD_NUM=$(BUILD_NUMBER)
-  }
-
 [Rule.Common.DXE_DRIVER]
   FILE DRIVER = $(NAMED_GUID) {
     DXE_DEPEX    DXE_DEPEX              Optional $(INF_OUTPUT)/$(MODULE_NAME).depex
@@ -307,4 +307,19 @@ READ_LOCK_STATUS   = TRUE
   FILE APPLICATION = $(NAMED_GUID) {
     UI     STRING ="$(MODULE_NAME)" Optional
     PE32   PE32                         $(INF_OUTPUT)/$(MODULE_NAME).efi
+  }
+
+  [Rule.Common.UEFI_DRIVER.BINARY]
+  FILE DRIVER = $(NAMED_GUID) {
+    DXE_DEPEX DXE_DEPEX Optional      |.depex
+    PE32      PE32                    |.efi
+    UI        STRING="$(MODULE_NAME)" Optional
+    VERSION   STRING="$(INF_VERSION)" Optional BUILD_NUM=$(BUILD_NUMBER)
+  }
+
+[Rule.Common.UEFI_APPLICATION.BINARY]
+  FILE APPLICATION = $(NAMED_GUID) {
+    PE32      PE32                    |.efi
+    UI        STRING="$(MODULE_NAME)" Optional
+    VERSION   STRING="$(INF_VERSION)" Optional BUILD_NUM=$(BUILD_NUMBER)
   }

@@ -36,11 +36,6 @@ stack_pointer_setup:
   LoadConstantToReg (FixedPcdGet32(PcdPrePiStackSize) ,r3)    /* stack size arg3  */
   add     r4, r2, r3
 
-  //Enter SVC mode and set up SVC stack pointer
-  mov     r0,#0x13|0x80|0x40
-  msr     CPSR_c,r0
-  mov     r13,r4
-
   // Call C entry point
   LoadConstantToReg (FixedPcdGet32(PcdMemorySize) ,r1)    /* memory size arg1          */
   LoadConstantToReg (FixedPcdGet32(PcdMemoryBase) ,r0)    /* memory size arg0         */
