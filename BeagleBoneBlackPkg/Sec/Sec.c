@@ -51,6 +51,18 @@ CEntryPoint (
   )
 {
   VOID *HobBase;
+  CHAR8 Q[4] = "4let";
+  SerialPortWrite ((UINT8 *) Q, 4);
+
+  CHAR8 R[5] = "5lets";
+  SerialPortWrite ((UINT8 *) R, 4);
+  SerialPortWrite ((UINT8 *) R, 5);
+
+  //DEBUG((EFI_D_ERROR, "UART ON\n"));
+  *((volatile unsigned int *) 0x44E09000) = 'A';
+
+  DebugPrint(EFI_D_ERROR, "UART");
+  *((volatile unsigned int *) 0x44E09000) = 'B';
   // Build a basic HOB list
   HobBase = (VOID *)(UINTN)(FixedPcdGet32(PcdEmbeddedFdBaseAddress) + FixedPcdGet32(PcdEmbeddedFdSize));
   CreateHobList (MemoryBase, MemorySize, HobBase, StackBase);
