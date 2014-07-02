@@ -17,28 +17,10 @@
 #include <Library/PcdLib.h>
 #include <Library/IoLib.h>
 #include <Library/PlatformHookLib.h>
-
+#include "Am335xUart.h"
 //
 // 16550 UART register offsets and bitfields
 //
-#define R_UART_RXBUF          0
-#define R_UART_TXBUF          0
-#define R_UART_BAUD_LOW       0
-#define R_UART_BAUD_HIGH      1
-#define R_UART_FCR            2
-#define   B_UART_FCR_FIFOE    BIT0
-#define   B_UART_FCR_FIFO64   BIT5
-#define R_UART_LCR            3
-#define   B_UART_LCR_DLAB     BIT7
-#define R_UART_MCR            4
-#define   B_UART_MCR_RTS      BIT1
-#define R_UART_LSR            5
-#define   B_UART_LSR_RXRDY    BIT0
-#define   B_UART_LSR_TXRDY    BIT5
-#define   B_UART_LSR_TEMT     BIT6
-#define R_UART_MSR            6
-#define   B_UART_MSR_CTS      BIT4
-#define   B_UART_MSR_DSR      BIT5
 
 /**
   Read an 8-bit 16550 register.  If PcdSerialUseMmio is TRUE, then the value is read from
@@ -182,10 +164,14 @@ SerialPortWrite (
   IN UINTN     NumberOfBytes
 )
 {
-  UINTN    Count;
+  UINT32  LSR = UART0_BASE + UART_LSR_REG;
+  UINT32  THR = UART0_BASE + UART_THR_REG;
 
+  UINTN    Count;
   for (Count = 0; Count < NumberOfBytes; Count++, Buffer++) {
-    MmioWrite8(0x44E09000, *Buffer);
+    // wait until ready
+    while ((MmioRead8(LSR) & UART_LSR_TX_FIFO_E_MASK) == UART_LSR_TX_FIFO_E_NOT_EMPTY);
+    MmioWrite8 (THR, *Buffer);
   }
   return NumberOfBytes;
 }

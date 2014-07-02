@@ -314,11 +314,11 @@ PrePiHobListPointerLib|ArmPlatformPkg/Library/PrePiHobListPointerLib/PrePiHobLis
   # CLEAR_MEMORY_ENABLED       0x08
   # ASSERT_BREAKPOINT_ENABLED  0x10
   # ASSERT_DEADLOOP_ENABLED    0x20
-#!if $(TARGET) == RELEASE
-#  gEfiMdePkgTokenSpaceGuid.PcdDebugPropertyMask|0x21
-#!else
+!if $(TARGET) == RELEASE
+  gEfiMdePkgTokenSpaceGuid.PcdDebugPropertyMask|0x21
+!else
   gEfiMdePkgTokenSpaceGuid.PcdDebugPropertyMask|0x2f
-#!endif
+!endif
 
   #  DEBUG_INIT      0x00000001  // Initialization
   #  DEBUG_WARN      0x00000002  // Warnings
@@ -520,7 +520,7 @@ PrePiHobListPointerLib|ArmPlatformPkg/Library/PrePiHobListPointerLib/PrePiHobLis
       NULL|ShellPkg/Library/UefiShellDebug1CommandsLib/UefiShellDebug1CommandsLib.inf
       NULL|ShellPkg/Library/UefiShellNetwork1CommandsLib/UefiShellNetwork1CommandsLib.inf
     !endif
-    <PcdsFeatureFlag>
-      gEfiShellPkgTokenSpaceGuid.PcdShellLibAutoInitialize|FALSE
+    <PcdsFixedAtBuild>
+      gEfiShellPkgTokenSpaceGuid.PcdShellLibAutoInitialize|TRUE
   }
 

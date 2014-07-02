@@ -54,6 +54,7 @@
 
 [FixedPcd.common]
   gEfiMdeModulePkgTokenSpaceGuid.PcdFirmwareVersionString
+  #gEfiMdePkgTokenSpaceGuid.PcdDebugPrintErrorLevel
 
   gArmTokenSpaceGuid.PcdTrustzoneSupport
   gArmTokenSpaceGuid.PcdVFPEnabled
