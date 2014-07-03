@@ -61,15 +61,15 @@
   UefiLib|MdePkg/Library/UefiLib/UefiLib.inf
   HobLib|MdePkg/Library/DxeHobLib/DxeHobLib.inf
   UefiRuntimeServicesTableLib|MdePkg/Library/UefiRuntimeServicesTableLib/UefiRuntimeServicesTableLib.inf
+  UefiRuntimeLib|MdePkg/Library/UefiRuntimeLib/UefiRuntimeLib.inf
   DevicePathLib|MdePkg/Library/UefiDevicePathLib/UefiDevicePathLib.inf
   UefiBootServicesTableLib|MdePkg/Library/UefiBootServicesTableLib/UefiBootServicesTableLib.inf
   DxeServicesTableLib|MdePkg/Library/DxeServicesTableLib/DxeServicesTableLib.inf
   UefiDriverEntryPoint|MdePkg/Library/UefiDriverEntryPoint/UefiDriverEntryPoint.inf
   UefiApplicationEntryPoint|MdePkg/Library/UefiApplicationEntryPoint/UefiApplicationEntryPoint.inf
+  
   HiiLib|MdeModulePkg/Library/UefiHiiLib/UefiHiiLib.inf
   UefiHiiServicesLib|MdeModulePkg/Library/UefiHiiServicesLib/UefiHiiServicesLib.inf
-
-  UefiRuntimeLib|MdePkg/Library/UefiRuntimeLib/UefiRuntimeLib.inf
 
   #
   # Assume everything is fixed at build
@@ -102,16 +102,11 @@
   FdtLib|EmbeddedPkg/Library/FdtLib/FdtLib.inf
 
 [LibraryClasses.common.SEC]
+  ArmLib|ArmPkg/Library/ArmLib/ArmV7/ArmV7LibSec.inf
   ArmPlatformSecLib|TexasInstrumentsPkg/BeagleBoneBlackPkg/Library/Am335xLib/ArmPlatformLibNullSec.inf
-  ArmPlatformLib|TexasInstrumentsPkg/BeagleBoneBlackPkg/Library/Am335xLib/ArmPlatformLibNullSec.inf
   ArmTrustedMonitorLib|TexasInstrumentsPkg/BeagleBoneBlackPkg/Library/ArmTrustedMonitorLibNull/ArmTrustedMonitorLibNull.inf
-
   DebugAgentLib|ArmPkg/Library/DebugAgentSymbolsBaseLib/DebugAgentSymbolsBaseLib.inf
   DefaultExceptionHandlerLib|ArmPkg/Library/DefaultExceptionHandlerLib/DefaultExceptionHandlerLibBase.inf
-
-[LibraryClasses.ARM.SEC]
-  ArmLib|ArmPkg/Library/ArmLib/ArmV7/ArmV7LibSec.inf
-
 
 [LibraryClasses.common.PEI_CORE]
   HobLib|MdePkg/Library/PeiHobLib/PeiHobLib.inf
@@ -122,8 +117,6 @@
   ReportStatusCodeLib|MdeModulePkg/Library/PeiReportStatusCodeLib/PeiReportStatusCodeLib.inf
   OemHookStatusCodeLib|MdeModulePkg/Library/OemHookStatusCodeLibNull/OemHookStatusCodeLibNull.inf
   PeCoffGetEntryPointLib|MdePkg/Library/BasePeCoffGetEntryPointLib/BasePeCoffGetEntryPointLib.inf
-    PeCoffLib|MdePkg/Library/BasePeCoffLib/BasePeCoffLib.inf
-
   UefiDecompressLib|MdePkg/Library/BaseUefiDecompressLib/BaseUefiDecompressLib.inf
   ExtractGuidedSectionLib|MdePkg/Library/PeiExtractGuidedSectionLib/PeiExtractGuidedSectionLib.inf
 
@@ -216,7 +209,7 @@
   #
   # Control what commands are supported from the UI
   # Turn these on and off to add features or save size
-  #
+  
   gEmbeddedTokenSpaceGuid.PcdEmbeddedMacBoot|TRUE
   gEmbeddedTokenSpaceGuid.PcdEmbeddedDirCmd|TRUE
   gEmbeddedTokenSpaceGuid.PcdEmbeddedHobCmd|TRUE
@@ -235,9 +228,9 @@
   gEfiMdeModulePkgTokenSpaceGuid.PcdTurnOffUsbLegacySupport|TRUE
 
 [PcdsFixedAtBuild.common]
-  gArmPlatformTokenSpaceGuid.PcdFirmwareVendor|"ARM Platform"
+  gArmPlatformTokenSpaceGuid.PcdFirmwareVendor|"ARM BeagleBoneBlack"
 
-  gEmbeddedTokenSpaceGuid.PcdEmbeddedPrompt|"ArmPlatform"
+  gEmbeddedTokenSpaceGuid.PcdEmbeddedPrompt|"BBB"
   gEfiMdePkgTokenSpaceGuid.PcdMaximumUnicodeStringLength|1000000
   gEfiMdePkgTokenSpaceGuid.PcdMaximumAsciiStringLength|1000000
   gEfiMdePkgTokenSpaceGuid.PcdMaximumLinkedListLength|1000000
@@ -356,17 +349,16 @@
   #
   # PEI Phase modules
   #
-  #ArmPlatformPkg/PrePeiCore/PrePeiCoreUniCore.inf {
-  #  <LibraryClasses>
-  #    ArmPlatformGlobalVariableLib|ArmPlatformPkg/Library/ArmPlatformGlobalVariableLib/Pei/PeiArmPlatformGlobalVariableLib.inf
-  #}
-
+  ArmPlatformPkg/PrePeiCore/PrePeiCoreUniCore.inf {
+    <LibraryClasses>
+      ArmPlatformGlobalVariableLib|ArmPlatformPkg/Library/ArmPlatformGlobalVariableLib/Pei/PeiArmPlatformGlobalVariableLib.inf
+  }
   MdeModulePkg/Core/Pei/PeiMain.inf
   MdeModulePkg/Universal/PCD/Pei/Pcd.inf  {
     <LibraryClasses>
       PcdLib|MdePkg/Library/BasePcdLibNull/BasePcdLibNull.inf
   }
-  #ArmPlatformPkg/PlatformPei/PlatformPeim.inf
+  ArmPlatformPkg/PlatformPei/PlatformPeim.inf
   #ArmPlatformPkg/MemoryInitPei/MemoryInitPeim.inf
   ArmPkg/Drivers/CpuPei/CpuPei.inf
   IntelFrameworkModulePkg/Universal/StatusCode/Pei/StatusCodePei.inf
