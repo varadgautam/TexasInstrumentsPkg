@@ -30,18 +30,9 @@ CEntryPoint (
   IN UINTN SecBootMode
   )
 {
-  CHAR8           Buffer[100];
-  UINTN           CharCount;
+  //CHAR8           Buffer[100];
+  //UINTN           CharCount;
   UINTN           JumpAddress;
-
-  // Invalidate the data cache. Doesn't have to do the Data cache clean.
-  ArmInvalidateDataCache();
-
-  // Invalidate Instruction Cache
-  ArmInvalidateInstructionCache();
-
-  // Invalidate I & D TLBs
-  ArmInvalidateInstructionAndDataTlb();
 
   // CPU specific settings
   ArmCpuSetup (MpId);
@@ -50,18 +41,6 @@ CEntryPoint (
   if (FixedPcdGet32 (PcdVFPEnabled)) {
     ArmEnableVFP();
   }
-
-  // Initialize peripherals that must be done at the early stage
-  // Example: Some L2 controller, interconnect, clock, DMC, etc
-  //ArmPlatformSecInitialize (MpId);
-
-  // Signal for the initial memory is configured (event: BOOT_MEM_INIT)
-  ArmCallSEV ();
-
-  SerialPortInitialize ();
-
-  CharCount = AsciiSPrint (Buffer,sizeof (Buffer),"SEC WRITE WORKING\n\r");
-  SerialPortWrite ((UINT8 *) Buffer, CharCount);
 
   // With Trustzone support the transition from Sec to Normal world is done by return_from_exception().
   // If we want to keep this function call we need to ensure the SVC's SPSR point to the same Program
