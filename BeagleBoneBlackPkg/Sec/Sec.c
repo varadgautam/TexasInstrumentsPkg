@@ -25,17 +25,53 @@
 #define SerialPrint(txt)  SerialPortWrite ((UINT8*)txt, AsciiStrLen(txt)+1);
 
 VOID
-CEntryPoint ()
+CEntryPoint (
+  IN UINTN MpId,
+  IN UINTN SecBootMode
+  )
 {
+  CHAR8           Buffer[100];
+  UINTN           CharCount;
+  UINTN           JumpAddress;
+
+  // Invalidate the data cache. Doesn't have to do the Data cache clean.
+  ArmInvalidateDataCache();
+
+  // Invalidate Instruction Cache
+  ArmInvalidateInstructionCache();
+
+  // Invalidate I & D TLBs
+  ArmInvalidateInstructionAndDataTlb();
+
   // CPU specific settings
-  ArmEnableBranchPrediction ();
+  ArmCpuSetup (MpId);
+
+  // Enable Floating Point Coprocessor if supported by the platform
+  if (FixedPcdGet32 (PcdVFPEnabled)) {
+    ArmEnableVFP();
+  }
+
+  // Initialize peripherals that must be done at the early stage
+  // Example: Some L2 controller, interconnect, clock, DMC, etc
+  //ArmPlatformSecInitialize (MpId);
+
+  // Signal for the initial memory is configured (event: BOOT_MEM_INIT)
+  ArmCallSEV ();
 
   SerialPortInitialize ();
-  char c[1] = "x";
 
-  while (TRUE){
-    SerialPortWrite((UINT8*) c, 1);
-  }
+  CharCount = AsciiSPrint (Buffer,sizeof (Buffer),"SEC WRITE WORKING\n\r");
+  SerialPortWrite ((UINT8 *) Buffer, CharCount);
+
+  // With Trustzone support the transition from Sec to Normal world is done by return_from_exception().
+  // If we want to keep this function call we need to ensure the SVC's SPSR point to the same Program
+  // Status Register as the the current one (CPSR).
+  copy_cpsr_into_spsr ();
+
+  // Call the Platform specific function to execute additional actions if required
+  JumpAddress = PcdGet32 (PcdFvBaseAddress);
+  //ArmPlatformSecExtraAction (MpId, &JumpAddress);
+  NonTrustedWorldTransition (MpId, JumpAddress);
 
   ASSERT (0); // never return
 }
@@ -88,7 +124,7 @@ TrustedWorldInitialization (
 
   //NonTrustedWorldTransition (MpId, JumpAddress);
 }
-
+*/
 VOID
 NonTrustedWorldTransition (
   IN  UINTN                     MpId,
@@ -107,5 +143,3 @@ NonTrustedWorldTransition (
   // PEI Core should always load and never return
   ASSERT (FALSE);
 }
-
-*/

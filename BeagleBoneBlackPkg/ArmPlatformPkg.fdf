@@ -52,14 +52,14 @@ gArmTokenSpaceGuid.PcdSecureFvBaseAddress|gArmTokenSpaceGuid.PcdSecureFvSize
 FV = FVMAIN_SEC
 
 
-[FD.ArmPlatform_EFI]
-BaseAddress   = 0x80028000|gArmTokenSpaceGuid.PcdFdBaseAddress  # The base address of the Firmware in NOR Flash.
-Size          = 0x00200000|gArmTokenSpaceGuid.PcdFdSize         # The size in bytes of the FLASH Device
-ErasePolarity = 1
+#[FD.ArmPlatform_EFI]
+#BaseAddress   = 0x80028000|gArmTokenSpaceGuid.PcdFdBaseAddress  # The base address of the Firmware in NOR Flash.
+#Size          = 0x00200000|gArmTokenSpaceGuid.PcdFdSize         # The size in bytes of the FLASH Device
+#ErasePolarity = 1
 
 # This one is tricky, it must be: BlockSize * NumBlocks = Size
-BlockSize     = 0x00001000
-NumBlocks     = 0x200
+#BlockSize     = 0x00001000
+#NumBlocks     = 0x200
 
 ################################################################################
 #
@@ -142,7 +142,6 @@ READ_LOCK_STATUS   = TRUE
   INF ArmPkg/Drivers/CpuDxe/CpuDxe.inf
   INF MdeModulePkg/Core/RuntimeDxe/RuntimeDxe.inf
   INF MdeModulePkg/Universal/SecurityStubDxe/SecurityStubDxe.inf
-  INF MdeModulePkg/Universal/WatchdogTimerDxe/WatchdogTimer.inf
   INF MdeModulePkg/Universal/CapsuleRuntimeDxe/CapsuleRuntimeDxe.inf
   INF MdeModulePkg/Universal/Variable/EmuRuntimeDxe/EmuVariableRuntimeDxe.inf
   INF EmbeddedPkg/EmbeddedMonotonicCounter/EmbeddedMonotonicCounter.inf
@@ -246,6 +245,11 @@ READ_LOCK_STATUS   = TRUE
     TE  TE    Align = 32                $(INF_OUTPUT)/$(MODULE_NAME).efi
   }
 
+[Rule.Common.SEC.BINARY]
+  FILE SEC = $(NAMED_GUID) RELOCS_STRIPPED {
+    TE  TE    Align = 32                |.efi
+  }
+
 [Rule.Common.PEI_CORE]
   FILE PEI_CORE = $(NAMED_GUID) {
     TE     TE                           $(INF_OUTPUT)/$(MODULE_NAME).efi
@@ -283,10 +287,9 @@ READ_LOCK_STATUS   = TRUE
 
 [Rule.Common.UEFI_DRIVER.BINARY]
   FILE DRIVER = $(NAMED_GUID) {
-    DXE_DEPEX DXE_DEPEX Optional      |.depex
-    PE32      PE32                    |.efi
-    UI        STRING="$(MODULE_NAME)" Optional
-    VERSION   STRING="$(INF_VERSION)" Optional BUILD_NUM=$(BUILD_NUMBER)
+    DXE_DEPEX    DXE_DEPEX              Optional |.depex
+    PE32         PE32                   |.efi
+    UI           STRING="$(MODULE_NAME)" Optional
   }
 
 [Rule.Common.DXE_DRIVER]
@@ -294,6 +297,12 @@ READ_LOCK_STATUS   = TRUE
     DXE_DEPEX    DXE_DEPEX              Optional $(INF_OUTPUT)/$(MODULE_NAME).depex
     PE32         PE32                   $(INF_OUTPUT)/$(MODULE_NAME).efi
     UI           STRING="$(MODULE_NAME)" Optional
+  }
+[Rule.Common.DXE_DRIVER.BINARY]
+  FILE DRIVER = $(NAMED_GUID) {
+  DXE_DEPEX    DXE_DEPEX              Optional |.depex
+  PE32         PE32                   |.efi
+  UI           STRING="$(MODULE_NAME)" Optional
   }
 
 [Rule.Common.DXE_RUNTIME_DRIVER]
