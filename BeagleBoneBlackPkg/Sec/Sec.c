@@ -48,7 +48,8 @@ CEntryPoint (
   copy_cpsr_into_spsr ();
 
   // Call the Platform specific function to execute additional actions if required
-  JumpAddress = PcdGet32 (PcdFvBaseAddress);
+  JumpAddress = FixedPcdGet32 (PcdFvBaseAddress);
+
   //ArmPlatformSecExtraAction (MpId, &JumpAddress);
   NonTrustedWorldTransition (MpId, JumpAddress);
 
