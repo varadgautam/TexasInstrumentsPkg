@@ -53,7 +53,7 @@ CreatePpiList (
   ArmPlatformGetPlatformPpiList (&PlatformPpiListSize, &PlatformPpiList);
 
   // Copy the Common and Platform PPis in Temporrary Memory
-  ListBase = PcdGet32 (PcdCPUCoresStackBase);
+  ListBase = FixedPcdGet32 (PcdCPUCoresStackBase);
   CopyMem ((VOID*)ListBase, gCommonPpiTable, sizeof(gCommonPpiTable));
   CopyMem ((VOID*)(ListBase + sizeof(gCommonPpiTable)), PlatformPpiList, PlatformPpiListSize);
 
@@ -74,9 +74,9 @@ CEntryPoint (
   // Data Cache enabled on Primary core when MMU is enabled.
   ArmDisableDataCache ();
   // Invalidate Data cache
-  ArmInvalidateDataCache ();
+  // ArmInvalidateDataCache ();
   // Invalidate instruction cache
-  ArmInvalidateInstructionCache ();
+  // ArmInvalidateInstructionCache ();
   // Enable Instruction Caches on all cores.
   ArmEnableInstructionCache ();
 
@@ -88,7 +88,7 @@ CEntryPoint (
   // Write VBAR - The Exception Vector table must be aligned to its requirement
   //TODO: Fix baseTools to ensure the Exception Vector Table is correctly aligned in AArch64
   //ASSERT(((UINTN)PeiVectorTable & ARM_VECTOR_TABLE_ALIGNMENT) == 0);
-  ArmWriteVBar ((UINTN)PeiVectorTable);
+  // ArmWriteVBar ((UINTN)PeiVectorTable);
 
   //Note: The MMU will be enabled by MemoryPeim. Only the primary core will have the MMU on.
 

@@ -26,8 +26,6 @@ GCC_ASM_IMPORT(ArmReadMpidr)
 GCC_ASM_IMPORT(ArmPlatformPeiBootAction)
 GCC_ASM_EXPORT(_ModuleEntryPoint)
 
-StartupAddr: .word    CEntryPoint
-
 ASM_PFX(_ModuleEntryPoint):
   // Do early platform specific actions
   bl    ASM_PFX(ArmPlatformPeiBootAction)
@@ -70,16 +68,12 @@ _PrepareArguments:
   LoadConstantToReg (FixedPcdGet32(PcdFvBaseAddress), r2)
   add   r2, r2, #4
   ldr   r1, [r2]
-
-  // Move sec startup address into a data register
-  // Ensure we're jumping to FV version of the code (not boot remapped alias)
-  ldr   r3, StartupAddr
-  
+ 
   // Jump to PrePeiCore C code
   //    r0 = mp_id
   //    r1 = pei_core_address
   mov   r0, r5
-  blx   r3
+  blx   ASM_PFX (CEntryPoint)
 
 _SetupPrimaryCoreStack:
   // r1 contains the top of the primary stack
@@ -87,7 +81,8 @@ _SetupPrimaryCoreStack:
 
   // The reserved space for global variable must be 8-bytes aligned for pushing
   // 64-bit variable on the stack
-  SetPrimaryStack (r1, r2, r3)
+  // Assuming Stack already setup by SPL
+  // SetPrimaryStack (r1, r2, r3)
   b     _PrepareArguments
 
 _NeverReturn:
