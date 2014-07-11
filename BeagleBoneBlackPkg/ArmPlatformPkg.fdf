@@ -49,11 +49,11 @@ NumBlocks     = 0x0200
 #
 ################################################################################
 
-0x00000000|0x00020000
-gArmTokenSpaceGuid.PcdSecureFvBaseAddress|gArmTokenSpaceGuid.PcdSecureFvSize
-FV = FVMAIN_SEC
+#0x00000000|0x00020000
+#gArmTokenSpaceGuid.PcdSecureFvBaseAddress|gArmTokenSpaceGuid.PcdSecureFvSize
+#FV = FVMAIN_SEC
 
-0x00020000|0x000f0000
+0x00000000|0x00030000
 gArmTokenSpaceGuid.PcdFvBaseAddress|gArmTokenSpaceGuid.PcdFvSize
 FV = FVMAIN_COMPACT
 
@@ -69,25 +69,25 @@ FV = FVMAIN_COMPACT
 #
 ################################################################################
 
-[FV.FVMAIN_SEC]
-FvAlignment        = 8
-ERASE_POLARITY     = 1
-MEMORY_MAPPED      = TRUE
-STICKY_WRITE       = TRUE
-LOCK_CAP           = TRUE
-LOCK_STATUS        = TRUE
-WRITE_DISABLED_CAP = TRUE
-WRITE_ENABLED_CAP  = TRUE
-WRITE_STATUS       = TRUE
-WRITE_LOCK_CAP     = TRUE
-WRITE_LOCK_STATUS  = TRUE
-READ_DISABLED_CAP  = TRUE
-READ_ENABLED_CAP   = TRUE
-READ_STATUS        = TRUE
-READ_LOCK_CAP      = TRUE
-READ_LOCK_STATUS   = TRUE
+#[FV.FVMAIN_SEC]
+#FvAlignment        = 8
+#ERASE_POLARITY     = 1
+#MEMORY_MAPPED      = TRUE
+#STICKY_WRITE       = TRUE
+#LOCK_CAP           = TRUE
+#LOCK_STATUS        = TRUE
+#WRITE_DISABLED_CAP = TRUE
+#WRITE_ENABLED_CAP  = TRUE
+#WRITE_STATUS       = TRUE
+#WRITE_LOCK_CAP     = TRUE
+#WRITE_LOCK_STATUS  = TRUE
+#READ_DISABLED_CAP  = TRUE
+#READ_ENABLED_CAP   = TRUE
+#READ_STATUS        = TRUE
+#READ_LOCK_CAP      = TRUE
+#READ_LOCK_STATUS   = TRUE
 
-  INF TexasInstrumentsPkg/BeagleBoneBlackPkg/Sec/Sec.inf
+  #INF TexasInstrumentsPkg/BeagleBoneBlackPkg/Sec/Sec.inf
 
 
 [FV.FvMain]
