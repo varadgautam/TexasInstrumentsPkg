@@ -349,7 +349,7 @@
   #
   # PEI Phase modules
   #
-  ArmPlatformPkg/PrePeiCore/PrePeiCoreUniCore.inf {
+  TexasInstrumentsPkg/BeagleBoneBlackPkg/PrePeiCore/PrePeiCoreUniCore.inf {
     <LibraryClasses>
       ArmPlatformGlobalVariableLib|ArmPlatformPkg/Library/ArmPlatformGlobalVariableLib/Pei/PeiArmPlatformGlobalVariableLib.inf
   }
