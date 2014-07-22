@@ -23,11 +23,13 @@
   MdePkg/MdePkg.dec
   MdeModulePkg/MdeModulePkg.dec
   ArmPkg/ArmPkg.dec
-  ArmPlatformPkg/ArmPlatformPkg.dec
+  EmbeddedPkg/EmbeddedPkg.dec
+  TexasInstrumentsPkg/BeagleBoneBlackPkg/ArmPlatformPkg.dec
 
 [LibraryClasses]
   ArmLib
   DebugLib
+  MemoryAllocationLib
 
 [Sources.common]
   ArmPlatformLibNull.c
@@ -35,3 +37,13 @@
 
 [Sources.Arm]
   ArmPlatformHelper.S    | GCC
+
+[FeaturePcd]
+  gEmbeddedTokenSpaceGuid.PcdCacheEnable
+
+[FixedPcd]
+  gArmTokenSpaceGuid.PcdFdBaseAddress
+  gArmTokenSpaceGuid.PcdFdSize
+
+  gArmTokenSpaceGuid.PcdSystemMemoryBase
+  gArmTokenSpaceGuid.PcdSystemMemorySize

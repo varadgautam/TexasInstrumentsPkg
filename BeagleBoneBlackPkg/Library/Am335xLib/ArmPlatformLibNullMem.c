@@ -14,6 +14,10 @@
 
 #include <Library/ArmPlatformLib.h>
 #include <Library/DebugLib.h>
+#include <Library/PcdLib.h>
+#include <Library/MemoryAllocationLib.h>
+
+#define MAX_VIRTUAL_MEMORY_MAP_DESCRIPTORS          4
 
 /**
   Return the Virtual Memory Map of your platform
@@ -30,5 +34,49 @@ ArmPlatformGetVirtualMemoryMap (
   IN ARM_MEMORY_REGION_DESCRIPTOR** VirtualMemoryMap
   )
 {
-  ASSERT(0);
+  ARM_MEMORY_REGION_ATTRIBUTES  CacheAttributes;
+  UINTN                         Index = 0;
+  ARM_MEMORY_REGION_DESCRIPTOR  *VirtualMemoryTable;
+
+  ASSERT(VirtualMemoryMap != NULL);
+
+  VirtualMemoryTable = (ARM_MEMORY_REGION_DESCRIPTOR*)AllocatePages(EFI_SIZE_TO_PAGES (sizeof(ARM_MEMORY_REGION_DESCRIPTOR) * MAX_VIRTUAL_MEMORY_MAP_DESCRIPTORS));
+
+  if (VirtualMemoryTable == NULL) {
+    return;
+  }
+
+  if (FeaturePcdGet(PcdCacheEnable) == TRUE) {
+    CacheAttributes = DDR_ATTRIBUTES_CACHED;
+  } else {
+    CacheAttributes = DDR_ATTRIBUTES_UNCACHED;
+  }
+
+  // ReMap (Either NOR Flash or DRAM)
+  VirtualMemoryTable[Index].PhysicalBase = FixedPcdGet64 (PcdSystemMemoryBase);
+  VirtualMemoryTable[Index].VirtualBase  = FixedPcdGet64 (PcdSystemMemoryBase);
+  VirtualMemoryTable[Index].Length       = FixedPcdGet64 (PcdSystemMemorySize);
+  VirtualMemoryTable[Index].Attributes   = CacheAttributes;
+
+  // SOC Registers. L3 interconnects
+  VirtualMemoryTable[++Index].PhysicalBase = SOC_REGISTERS_L3_PHYSICAL_BASE;
+  VirtualMemoryTable[Index].VirtualBase  = SOC_REGISTERS_L3_PHYSICAL_BASE;
+  VirtualMemoryTable[Index].Length       = SOC_REGISTERS_L3_PHYSICAL_LENGTH;
+  VirtualMemoryTable[Index].Attributes   = SOC_REGISTERS_L3_ATTRIBUTES;
+
+  // SOC Registers. L4 interconnects
+  VirtualMemoryTable[++Index].PhysicalBase = SOC_REGISTERS_L4_PHYSICAL_BASE;
+  VirtualMemoryTable[Index].VirtualBase  = SOC_REGISTERS_L4_PHYSICAL_BASE;
+  VirtualMemoryTable[Index].Length       = SOC_REGISTERS_L4_PHYSICAL_LENGTH;
+  VirtualMemoryTable[Index].Attributes   = SOC_REGISTERS_L4_ATTRIBUTES;
+
+  // End of Table
+  VirtualMemoryTable[++Index].PhysicalBase = 0;
+  VirtualMemoryTable[Index].VirtualBase  = 0;
+  VirtualMemoryTable[Index].Length       = 0;
+  VirtualMemoryTable[Index].Attributes   = (ARM_MEMORY_REGION_ATTRIBUTES)0;
+
+  ASSERT((Index + 1) == MAX_VIRTUAL_MEMORY_MAP_DESCRIPTORS);
+
+  *VirtualMemoryMap = VirtualMemoryTable;
 }

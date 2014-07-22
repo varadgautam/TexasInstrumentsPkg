@@ -49,13 +49,17 @@ NumBlocks     = 0x0200
 #
 ################################################################################
 
-#0x00000000|0x00020000
+#0x00000000|0x00050000
 #gArmTokenSpaceGuid.PcdSecureFvBaseAddress|gArmTokenSpaceGuid.PcdSecureFvSize
-#FV = FVMAIN_SEC
+#FV = FVMAIN_COMPACT
 
-0x00000000|0x00030000
+0x00000000|0x000F0000
 gArmTokenSpaceGuid.PcdFvBaseAddress|gArmTokenSpaceGuid.PcdFvSize
 FV = FVMAIN_COMPACT
+
+#0x00050000|0x000F0000
+#gArmTokenSpaceGuid.PcdDxeFvBaseAddress|gArmTokenSpaceGuid.PcdDxeFvSize
+#FV = FVMAIN_COMPRESSED
 
 
 ################################################################################
@@ -86,13 +90,13 @@ FV = FVMAIN_COMPACT
 #READ_STATUS        = TRUE
 #READ_LOCK_CAP      = TRUE
 #READ_LOCK_STATUS   = TRUE
-
-  #INF TexasInstrumentsPkg/BeagleBoneBlackPkg/Sec/Sec.inf
+   #INF TexasInstrumentsPkg/BeagleBoneBlackPkg/Sec/Sec.inf
+   #INF ArmPlatformPkg/PrePi/PeiUniCore.inf
 
 
 [FV.FvMain]
-BlockSize          = 0x40
-NumBlocks          = 0         # This FV gets compressed so make it just big enough
+BlockSize          = 0x1000
+NumBlocks          = 0xA0         # This FV gets compressed so make it just big enough
 FvAlignment        = 8         # FV alignment and FV attributes setting.
 ERASE_POLARITY     = 1
 MEMORY_MAPPED      = TRUE
@@ -171,7 +175,7 @@ READ_STATUS        = TRUE
 READ_LOCK_CAP      = TRUE
 READ_LOCK_STATUS   = TRUE
 
-  INF TexasInstrumentsPkg/BeagleBoneBlackPkg/PrePeiCore/PrePeiCoreUniCore.inf
+  INF ArmPlatformPkg/PrePi/PeiUniCore.inf
 #  INF MdeModulePkg/Core/Pei/PeiMain.inf
 #  INF ArmPlatformPkg/PlatformPei/PlatformPeim.inf
 #  INF ArmPlatformPkg/MemoryInitPei/MemoryInitPeim.inf
@@ -187,6 +191,39 @@ READ_LOCK_STATUS   = TRUE
     }
   }
 
+#[FV.FVMAIN_COMPRESSED]
+#FvAlignment        = 8
+#ERASE_POLARITY     = 1
+#MEMORY_MAPPED      = TRUE
+#STICKY_WRITE       = TRUE
+#LOCK_CAP           = TRUE
+#LOCK_STATUS        = TRUE
+#WRITE_DISABLED_CAP = TRUE
+#WRITE_ENABLED_CAP  = TRUE
+#WRITE_STATUS       = TRUE
+#WRITE_LOCK_CAP     = TRUE
+#WRITE_LOCK_STATUS  = TRUE
+#READ_DISABLED_CAP  = TRUE
+#READ_ENABLED_CAP   = TRUE
+#READ_STATUS        = TRUE
+#READ_LOCK_CAP      = TRUE
+#READ_LOCK_STATUS   = TRUE
+
+  
+#  INF MdeModulePkg/Core/Pei/PeiMain.inf
+#  INF ArmPlatformPkg/PlatformPei/PlatformPeim.inf
+#  INF ArmPlatformPkg/MemoryInitPei/MemoryInitPeim.inf
+#  INF ArmPkg/Drivers/CpuPei/CpuPei.inf
+#  INF MdeModulePkg/Universal/PCD/Pei/Pcd.inf
+#  INF IntelFrameworkModulePkg/Universal/StatusCode/Pei/StatusCodePei.inf
+#  INF MdeModulePkg/Universal/Variable/Pei/VariablePei.inf
+#  INF MdeModulePkg/Core/DxeIplPeim/DxeIpl.inf
+
+#  FILE FV_IMAGE = 9E21FD93-9C72-4c15-8C4B-E77F1DB2D792 {
+#    SECTION GUIDED EE4E5898-3914-4259-9D6E-DC7BD79403CF PROCESSING_REQUIRED = TRUE {
+#      SECTION FV_IMAGE = FVMAIN
+#    }
+#  }
 
 ################################################################################
 #
