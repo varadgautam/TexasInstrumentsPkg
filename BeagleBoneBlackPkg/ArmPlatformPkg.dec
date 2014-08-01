@@ -21,14 +21,5 @@
 
 [Protocols]
 
-[PcdsFixedAtBuild.common]
-# PeiServicePtr and HobListPtr shares the same location in the PEI Global Variable list
-  # PeiServicePtr is only valid with PEI Core and HobListPtr only when the PEI Core is skipped. 
-#  gArmPlatformTokenSpaceGuid.PcdPeiServicePtrGlobalOffset|0x0|UINT32|0x00000017
-#  gArmPlatformTokenSpaceGuid.PcdHobListPtrGlobalOffset|0x0|UINT32|0x00000018
-  gArmTokenSpaceGuid.PcdDxeFvBaseAddress|0x0|UINT32|0x0000002F
-  gArmTokenSpaceGuid.PcdDxeFvSize|0x0|UINT32|0x00000030
-
-
 [Guids]
   gBeagleBoneBlackTokenSpaceGuid    =  { 0x6834fe45, 0x4aee, 0x4fc6, { 0xbc, 0xb5, 0xff, 0x45, 0xb7, 0xa8, 0x71, 0xe2 } }
