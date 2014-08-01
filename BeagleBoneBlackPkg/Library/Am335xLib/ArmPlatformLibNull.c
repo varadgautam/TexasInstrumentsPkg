@@ -15,16 +15,6 @@
 #include <Library/ArmLib.h>
 #include <Library/ArmPlatformLib.h>
 
-// This function should be better located into TimerLib implementation
-RETURN_STATUS
-EFIAPI
-TimerConstructor (
-  VOID
-  )
-{
-  return EFI_SUCCESS;
-}
-
 /**
   Return the current Boot Mode
 
