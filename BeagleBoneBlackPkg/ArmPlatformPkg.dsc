@@ -307,10 +307,10 @@
   gArmTokenSpaceGuid.PcdArmUncachedMemoryMask|0x0000000000000000
   
   gArmPlatformTokenSpaceGuid.PcdCPUCoresStackBase|0x4030B800
-  gArmPlatformTokenSpaceGuid.PcdPeiGlobalVariableSize|0x40
+  gArmPlatformTokenSpaceGuid.PcdPeiGlobalVariableSize|0x4
   
   gArmTokenSpaceGuid.PcdSystemMemoryBase|0x80000000
-  gArmTokenSpaceGuid.PcdSystemMemorySize|0x10000000
+  gArmTokenSpaceGuid.PcdSystemMemorySize|0x40000000
 
   # Size of the region used by UEFI in permanent memory (Reserved 16MB)
   gArmPlatformTokenSpaceGuid.PcdSystemMemoryUefiRegionSize|0x01000000
