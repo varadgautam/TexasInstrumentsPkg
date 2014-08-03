@@ -341,6 +341,7 @@
   ArmPkg/Drivers/CpuDxe/CpuDxe.inf  
 
   TexasInstrumentsPkg/BeagleBoneBlackPkg/Drivers/InterruptDxe/InterruptDxe.inf
+  TexasInstrumentsPkg/BeagleBoneBlackPkg/Drivers/TimerDxe/TimerDxe.inf
   MdeModulePkg/Core/RuntimeDxe/RuntimeDxe.inf
   MdeModulePkg/Universal/SecurityStubDxe/SecurityStubDxe.inf
   MdeModulePkg/Universal/WatchdogTimerDxe/WatchdogTimer.inf
