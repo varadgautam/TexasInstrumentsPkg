@@ -96,7 +96,7 @@ FV = FVMAIN_COMPACT
 
 [FV.FvMain]
 BlockSize          = 0x1000
-NumBlocks          = 0xA0         # This FV gets compressed so make it just big enough
+NumBlocks          = 0xC0         # This FV gets compressed so make it just big enough
 FvAlignment        = 8         # FV alignment and FV attributes setting.
 ERASE_POLARITY     = 1
 MEMORY_MAPPED      = TRUE
@@ -120,8 +120,11 @@ READ_LOCK_STATUS   = TRUE
   # PI DXE Drivers producing Architectural Protocols (EFI Services)
   #
   INF ArmPkg/Drivers/CpuDxe/CpuDxe.inf
+  
+  INF TexasInstrumentsPkg/BeagleBoneBlackPkg/Drivers/InterruptDxe/InterruptDxe.inf
   INF MdeModulePkg/Core/RuntimeDxe/RuntimeDxe.inf
   INF MdeModulePkg/Universal/SecurityStubDxe/SecurityStubDxe.inf
+  INF MdeModulePkg/Universal/WatchdogTimerDxe/WatchdogTimer.inf
   INF MdeModulePkg/Universal/CapsuleRuntimeDxe/CapsuleRuntimeDxe.inf
   INF MdeModulePkg/Universal/Variable/EmuRuntimeDxe/EmuVariableRuntimeDxe.inf
   INF EmbeddedPkg/EmbeddedMonotonicCounter/EmbeddedMonotonicCounter.inf
