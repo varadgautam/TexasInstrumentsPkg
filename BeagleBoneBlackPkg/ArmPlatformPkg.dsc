@@ -301,8 +301,8 @@
   # DMTIMER0
   #
   
-  gEmbeddedTokenSpaceGuid.PcdEmbeddedPerformanceCounterPeriodInNanoseconds|3125
-  gEmbeddedTokenSpaceGuid.PcdEmbeddedPerformanceCounterFrequencyInHz|32000
+  gEmbeddedTokenSpaceGuid.PcdEmbeddedPerformanceCounterPeriodInNanoseconds|4000
+  gEmbeddedTokenSpaceGuid.PcdEmbeddedPerformanceCounterFrequencyInHz|25000
 
   #
   # ARM Pcds
@@ -327,7 +327,7 @@
   #
   # PEI Phase modules
   #
-  TexasInstrumentsPkg/BeagleBoneBlackPkg/PrePi/PeiUniCore.inf
+  ArmPlatformPkg/PrePi/PeiUniCore.inf
 
   #
   # DXE
@@ -379,12 +379,6 @@
   EmbeddedPkg/Universal/MmcDxe/MmcDxe.inf
   TexasInstrumentsPkg/BeagleBoneBlackPkg/Drivers/MmcHostDxe/MmcHostDxe.inf
 
-  #
-  #
-  # Semi-hosting filesystem
-  #
-  #ArmPkg/Filesystem/SemihostFs/SemihostFs.inf
-  
   #
   # FAT filesystem + GPT/MBR partitioning
   #
